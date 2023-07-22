@@ -1,0 +1,81 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+
+int convertToNumericalGrade(const std::string& grade) {
+    std::map<std::string, int> gradeMapping = {
+        {"A+", 10},
+        {"A", 9},
+        {"B+", 8},
+        {"B", 7},
+        {"C+", 6},
+        {"C", 5},
+        {"D+", 4},
+        {"D", 3},
+        {"F", 0}
+    };
+
+    auto it = gradeMapping.find(grade);
+    return it != gradeMapping.end() ? it->second : -1;
+}
+
+int main() {
+    std::vector<std::string> studentNames;
+    std::vector<std::string> studentGrades;
+
+    std::cout << "Welcome to the Student Grade Management System!\n";
+    std::cout << "Enter 'q' as a student name to stop entering data.\n\n";
+
+    while (true) {
+        std::string name, grade;
+        std::cout << "Enter student name: ";
+        std::cin >> name;
+
+        if (name == "q") {
+            break;
+        }
+
+        std::cout << "Enter grade :";
+        std::cin >> grade;
+
+        if (convertToNumericalGrade(grade) == -1) {
+            std::cout << "Invalid grade entered. Please try again.\n";
+            continue;
+        }
+
+        studentNames.push_back(name);
+        studentGrades.push_back(grade);
+    }
+
+    double totalGradePoints = 0.0;
+    int numStudents = studentGrades.size();
+    for (const auto& grade : studentGrades) {
+        totalGradePoints += convertToNumericalGrade(grade);
+    }
+    double averageGrade = totalGradePoints / numStudents;
+
+    std::string highestGrade = studentGrades[0];
+    std::string lowestGrade = studentGrades[0];
+    for (const auto& grade : studentGrades) {
+        if (convertToNumericalGrade(grade) > convertToNumericalGrade(highestGrade)) {
+            highestGrade = grade;
+        }
+        if (convertToNumericalGrade(grade) < convertToNumericalGrade(lowestGrade)) {
+            lowestGrade = grade;
+        }
+    }
+
+    std::cout << "\nGrade Report:\n";
+    std::cout << "--------------------------------\n";
+    std::cout << "Student Names: ";
+    for (const auto& name : studentNames) {
+        std::cout << name << ", ";
+    }
+    std::cout << "\nAverage Grade: " << highestGrade << "\n";
+    std::cout << "Highest Grade: " << highestGrade << "\n";
+    std::cout << "Lowest Grade: " << lowestGrade << "\n";
+
+    return 0;
+}
+
