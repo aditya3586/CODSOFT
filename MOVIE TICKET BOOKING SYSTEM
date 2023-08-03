@@ -1,0 +1,117 @@
+#include <iostream>
+#include <iomanip>
+#include <vector>
+using namespace std;
+
+const string MOVIE_NAMES[] = { "Krish", "Bahubali", "Tanhaji" };
+const double MOVIE_PRICES[] = { 180.0, 220.0, 200.0 };
+const int NUM_MOVIES = 3;
+
+const int ROWS = 10;
+const int COLS = 10;
+
+void displaySeats(vector<vector<bool>>& seats) {
+    cout << "   ";
+    for (int j = 1; j <= COLS; j++) {
+        cout << setw(3) << j;
+    }
+    cout << endl;
+    for (int i = 0; i < ROWS; i++) {
+        cout << setw(3) << (char)('A' + i) << " ";
+        for (int j = 0; j < COLS; j++) {
+            char symbol = seats[i][j] ? 'X' : 'o';
+            cout << setw(3) << symbol;
+        }
+        cout << endl;
+    }
+}
+
+bool bookSeats(vector<vector<bool>>& seats, int numSeats) {
+    int bookedCount = 0;
+    cout << "Enter seat(s) in the format ROW COL (e.g., A1 B2 C3):" << endl;
+
+    while (bookedCount < numSeats) {
+        string seat;
+        cin >> seat;
+
+        if (seat.length() != 2 || !isalpha(seat[0]) || !isdigit(seat[1])) {
+            cout << "Invalid seat format. Please try again." << endl;
+            continue;
+        }
+
+        int row = toupper(seat[0]) - 'A';
+        int col = seat[1] - '1';
+
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLS) {
+            cout << "Invalid seat. Please try again." << endl;
+            continue;
+        }
+
+        if (seats[row][col]) {
+            cout << "Seat already booked. Please choose another seat." << endl;
+        } else {
+            seats[row][col] = true;
+            bookedCount++;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+    vector<vector<bool>> seats(ROWS, vector<bool>(COLS, false));
+
+    cout << "Welcome to Movie Ticket Booking System" << endl;
+
+    while (true) {
+        cout << "\nMovie Listing:" << endl;
+        for (int i = 0; i < NUM_MOVIES; i++) {
+            cout << i + 1 << ". " << MOVIE_NAMES[i] << " - $" << MOVIE_PRICES[i] << endl;
+        }
+
+        int choice;
+        cout << "Enter the number corresponding to the movie you want to book (0 to exit): ";
+        cin >> choice;
+
+        if (choice == 0) {
+            cout << "Thank you for using the Movie Ticket Booking System. Goodbye!" << endl;
+            break;
+        } else if (choice < 1 || choice > NUM_MOVIES) {
+            cout << "Invalid choice. Please try again." << endl;
+            continue;
+        }
+
+        cout << "\nYou selected: " << MOVIE_NAMES[choice - 1] << endl;
+        cout << "Available Seats:" << endl;
+        displaySeats(seats);
+
+        int numSeats;
+        cout << "Enter the number of seats you want to book: ";
+        cin >> numSeats;
+
+        if (numSeats <= 0) {
+            cout << "Invalid number of seats. Please try again." << endl;
+            continue;
+        }
+
+        double totalCost = MOVIE_PRICES[choice - 1] * numSeats;
+
+        cout << "Total cost: $" << totalCost << endl;
+
+        char confirm;
+        cout << "Confirm booking? (Y/N): ";
+        cin >> confirm;
+
+        if (confirm == 'Y' || confirm == 'y') {
+            if (bookSeats(seats, numSeats)) {
+                cout << "Booking successful! Enjoy the movie!" << endl;
+            } else {
+                cout << "Booking failed. Please try again later." << endl;
+            }
+        } else {
+            cout << "Booking canceled." << endl;
+        }
+    }
+
+    return 0;
+}
