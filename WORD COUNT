@@ -1,0 +1,32 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+int countWordsInFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error opening the file. Please make sure the file exists and try again.\n";
+        return -1;
+    }
+    std::string line;
+    int wordCount = 0;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string word;
+        while (iss >> word) {
+            wordCount++;
+        }
+    }
+    return wordCount;
+}
+int main() {
+    std::string filename;
+    std::cout << "Enter the name of the text file: ";
+    std::cin >> filename;
+    int totalWords = countWordsInFile(filename);
+    if (totalWords >= 0) {
+        std::cout << "Total word count: " << totalWords << std::endl;
+    }
+    return 0;
+}
